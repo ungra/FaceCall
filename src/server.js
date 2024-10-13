@@ -1,10 +1,9 @@
 const express = require("express");
-const app = express();
-
 const http = require("http");
-const server = http.Server(app);
-
 const socket = require("socket.io");
+
+const app = express();
+const server = http.Server(app);
 const io = socket(server);
 
 app.set("view engine", "pug");
@@ -17,9 +16,11 @@ app.get("/", (req, res) => {
 
 server.listen(3000, () => {
   console.log(__dirname + "/public");
-  console.log("hello");
 });
 
-io.on("connetion", () => {
+io.on("connetion", (socket) => {
   console.log("someone join");
+  socket.onAny((event) => {
+    console.log(`Socket Event: ${event}`);
+  });
 });
