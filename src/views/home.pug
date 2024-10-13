@@ -24,19 +24,21 @@ html(lang="en")
                 div#roomListDiv 
                     h3 RoomList
             div#callPageDiv
-                h3#mySection My Camera
-                    video#myCamera(autoplay width="400px" height="400" style="-moz-transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform: rotateY(180deg)")
+                h3 My Camera
+                    div 
+                        video#myCamera(autoplay width="400px" height="400" style="-moz-transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform: rotateY(180deg)")
+                        div
+                            ul#myAudio
+                            ul#myVideo 
+                            button mute
+                            button turn off camera
+                h3 Peer Camera 
                     div
-                        ul#myAudio
-                        ul#myVideo 
-                        button mute
-                        button turn off camera
-                h3#preerSection Peer Camera 
-                    video#peerCamera(autoplay width="400px" height="400")
-                    div
-                        ul#peerAudio
-                        ul#peerVideo 
-                        button mute
-                        button turn off camera
+                        video#peerCamera(autoplay width="400px" height="400")
+                        div
+                            ul#peerAudio
+                            ul#peerVideo 
+                            button mute
+                            button turn off camera
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
