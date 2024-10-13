@@ -30,15 +30,15 @@ html(lang="en")
                         div
                             ul#myAudio
                             ul#myVideo 
-                            button mute
-                            button turn off camera
+                            button#myAudioMute Mute
+                            button#myVideoOff Turn off Camera
                 h3 Peer Camera 
                     div
                         video#peerCamera(autoplay width="400px" height="400")
                         div
                             ul#peerAudio
                             ul#peerVideo 
-                            button mute
-                            button turn off camera
+                            button#peerAudioMute mute
+                            button#peerVideoOff turn off camera
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")

@@ -7,9 +7,14 @@ const roomNameForm = document.getElementById("roomNameForm");
 const roomListDiv = document.getElementById("roomListDiv");
 const myVideo = document.getElementById("myCamera");
 const peerVideo = document.getElementById("peerCamera");
+const myVideoOffBt = document.getElementById("myVideoOff");
+const myAudioMuteBt = document.getElementById("myAudioMute");
 
 let myNickname = "anonymous";
 let roomName;
+let myMediaStream;
+let myCamera = true;
+let myAudio = true;
 
 landingPage.hidden = false;
 callPage.hidden = true;
@@ -31,7 +36,7 @@ socket.on("disconnect", () => {
 
 async function getMyCamera() {
   try {
-    const myMediaStream = await navigator.mediaDevices.getUserMedia({
+    myMediaStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
@@ -40,6 +45,36 @@ async function getMyCamera() {
     console.log(e);
   }
 }
+
+function handleMyCameraBt(event) {
+  event.preventDefault();
+  if (myCamera) {
+    myMediaStream.getVideoTracks()[0].stop();
+    myCamera = false;
+    myVideoOffBt.innerText = "Turn on Camera";
+  } else {
+    console.log(myMediaStream.getVideoTracks());
+    getMyCamera();
+    myCamera = true;
+    myVideoOffBt.innerText = "Turn off Camera";
+  }
+}
+
+function handleMyAudioBt(event) {
+  event.preventDefault();
+  if (myAudio) {
+    myMediaStream.getAudioTracks()[0].stop();
+    myAudio = false;
+    myAudioMuteBt.innerText = "unMute";
+  } else {
+    getMyCamera();
+    myAudio = true;
+    myAudioMuteBt.innerText = "Mute";
+  }
+}
+
+myVideoOffBt.addEventListener("click", handleMyCameraBt);
+myAudioMuteBt.addEventListener("click", handleMyAudioBt);
 
 //landing page
 function handleNickname(event) {
