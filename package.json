@@ -1,0 +1,26 @@
+{
+  "name": "facecall",
+  "version": "1.0.0",
+  "description": "Face to face call using WebRTC, socket.io, NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon"
+  },
+  "author": "JJ",
+  "license": "MIT License",
+  "devDependencies": {
+    "@babel/cli": "^7.25.7",
+    "@babel/core": "^7.25.8",
+    "@babel/node": "^7.25.7",
+    "@babel/preset-env": "^7.25.8",
+    "nodemon": "^3.1.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ungra/FaceCall.git"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "pug": "^3.0.3"
+  }
+}
