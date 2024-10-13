@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 
 server.listen(3000, () => {
-  console.log(__dirname + "/public");
+  console.log("server start");
 });
 
 io.on("connetion", (socket) => {

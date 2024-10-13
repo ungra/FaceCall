@@ -9,27 +9,32 @@ html(lang="en")
         header
             h1 FaceCall 
         main
-            div#landingpage 
+            div#landingPageDiv 
                 h2 Welcome to FaceCall
-                h3 Please write your nickname
-                input#nickname(type="text" placeholder="Nickname")
-                h3 make a room 
-                input#roomname(type="text" placeholder="Roomname")
-                div#roomlist 
+                div#submitNicknameDiv
+                    h3 Please write your nickname
+                    form#nickNameForm
+                        input(type="text" placeholder="write your nickname")
+                div#submittedUserNickNameDiv
+                div#submitRoomNameDiv
+                    h3 make a room
+                    form#roomNameForm
+                        input(type="text" placeholder="Roomname")
+                div#roomListDiv 
                     h3 RoomList
-            div#callpage
-                h3#mycamera My Camera
-                    video#mycamera(autoplay width="400px" height="400")
+            div#callPageDiv
+                h3#mySection My Camera
+                    video#myCamera(autoplay width="400px" height="400")
                     div
-                        ul#myaudio
-                        ul#myvideo 
+                        ul#myAudio
+                        ul#myVideo 
                         button mute
                         button turn off camera
-                h3#peercamera Peer Camera 
-                    video#peercamera(autoplay width="400px" height="400")
+                h3#preerSection Peer Camera 
+                    video#peerCamera(autoplay width="400px" height="400")
                     div
-                        ul#peeraudio
-                        ul#peervideo 
+                        ul#peerAudio
+                        ul#peerVideo 
                         button mute
                         button turn off camera
         script(src="/socket.io/socket.io.js")
