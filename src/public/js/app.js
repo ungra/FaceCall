@@ -9,12 +9,16 @@ const myVideo = document.getElementById("myCamera");
 const peerVideo = document.getElementById("peerCamera");
 const myVideoOffBt = document.getElementById("myVideoOff");
 const myAudioMuteBt = document.getElementById("myAudioMute");
+const myCameraSelect = document.getElementById("myVideo");
+const myAudioSelect = document.getElementById("myAudio");
 
 let myNickname = "anonymous";
 let roomName;
 let myMediaStream;
 let myCamera = true;
 let myAudio = true;
+let myCameraList;
+let myAudioList;
 
 landingPage.hidden = false;
 callPage.hidden = true;
@@ -34,12 +38,36 @@ socket.on("disconnect", () => {
 
 //callPage
 
+function settingCameraList() {
+  myCameraList = myMediaStream
+    .getTracks()
+    .filter((track) => track.kind === "video");
+  myCameraList.forEach((camera) => {
+    const option = document.createElement("option");
+    option.innerText = camera.label;
+    myCameraSelect.appendChild(option);
+  });
+}
+
+function setttingAudioList() {
+  myAudioList = myMediaStream
+    .getTracks()
+    .filter((track) => track.kind === "audio");
+  myAudioList.forEach((audio) => {
+    const option = document.createElement("option");
+    option.innerText = audio.label;
+    myAudioSelect.appendChild(option);
+  });
+}
+
 async function getMyCamera() {
   try {
     myMediaStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
+    settingCameraList();
+    setttingAudioList();
     myVideo.srcObject = myMediaStream;
   } catch (e) {
     console.log(e);

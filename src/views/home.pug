@@ -28,16 +28,16 @@ html(lang="en")
                     div 
                         video#myCamera(autoplay width="400px" height="400" style="-moz-transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform: rotateY(180deg)")
                         div
-                            ul#myAudio
-                            ul#myVideo 
+                            select#myAudio
+                            select#myVideo 
                             button#myAudioMute Mute
                             button#myVideoOff Turn off Camera
                 h3 Peer Camera 
                     div
                         video#peerCamera(autoplay width="400px" height="400")
                         div
-                            ul#peerAudio
-                            ul#peerVideo 
+                            select#peerAudio
+                            select#peerVideo 
                             button#peerAudioMute mute
                             button#peerVideoOff turn off camera
         script(src="/socket.io/socket.io.js")
