@@ -3,8 +3,11 @@ const callPage = document.getElementById("callPageDiv");
 const submitNickName = document.getElementById("submitNicknameDiv");
 const submitedNickName = document.getElementById("submittedUserNickNameDiv");
 const nickNameForm = document.getElementById("nickNameForm");
+const roomNameForm = document.getElementById("roomNameForm");
+const roomListDiv = document.getElementById("roomListDiv");
 
 let myNickname;
+let roomName;
 
 landingPage.hidden = false;
 callPage.hidden = true;
@@ -37,8 +40,8 @@ async function getMyCamera() {
 //landing page
 function handleNickname(event) {
   event.preventDefault();
-  console.log("handle Nick Name");
   const input = nickNameForm.querySelector("input");
+  console.log(`submit Nick Name: ${input.value}`);
   myNickname = input.value;
   submitNickName.hidden = true;
   submitedNickName.hidden = false;
@@ -47,5 +50,17 @@ function handleNickname(event) {
   submitedNickName.appendChild(h3);
   input.value = "";
 }
+function handleRoomname(event) {
+  event.preventDefault();
+  const input = roomNameForm.querySelector("input");
+  const roomList = roomListDiv.querySelector("h3");
+  console.log(`submit Room Name: ${input.value}`);
+  roomName = input.value;
+  const li = document.createElement("li");
+  li.innerText = roomName;
+  roomList.appendChild(li);
+  input.value = "";
+}
+
 nickNameForm.addEventListener("submit", handleNickname);
-console.log(myNickname);
+roomNameForm.addEventListener("submit", handleRoomname);
