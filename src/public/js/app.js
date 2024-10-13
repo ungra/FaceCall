@@ -5,8 +5,10 @@ const submitedNickName = document.getElementById("submittedUserNickNameDiv");
 const nickNameForm = document.getElementById("nickNameForm");
 const roomNameForm = document.getElementById("roomNameForm");
 const roomListDiv = document.getElementById("roomListDiv");
+const myVideo = document.getElementById("myCamera");
+const peerVideo = document.getElementById("peerCamera");
 
-let myNickname;
+let myNickname = "anonymous";
 let roomName;
 
 landingPage.hidden = false;
@@ -25,17 +27,19 @@ socket.on("disconnect", () => {
   console.log("disconnect!!!");
 });
 
-//video
-const myVideo = document.getElementById("mycamera");
+//callPage
 
 async function getMyCamera() {
-  const myMediaStream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true,
-  });
-  myVideo.srcObject = myMediaStream;
+  try {
+    const myMediaStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    myVideo.srcObject = myMediaStream;
+  } catch (e) {
+    console.log(e);
+  }
 }
-// getMyCamera();
 
 //landing page
 function handleNickname(event) {
@@ -60,6 +64,18 @@ function handleRoomname(event) {
   li.innerText = roomName;
   roomList.appendChild(li);
   input.value = "";
+  landingPage.hidden = true;
+  callPage.hidden = false;
+  initCallPage();
+}
+function initCallPage() {
+  const roomNameh2 = document.createElement("h2");
+  roomNameh2.innerText = `RoomName : ${roomName}`;
+  callPage.prepend(roomNameh2);
+  const nickNameh2 = document.createElement("h2");
+  nickNameh2.innerText = `My NickName : ${myNickname}`;
+  callPage.prepend(nickNameh2);
+  getMyCamera();
 }
 
 nickNameForm.addEventListener("submit", handleNickname);
