@@ -8,7 +8,28 @@ html(lang="en")
     body 
         header
             h1 FaceCall 
-        main 
-            h2 Welcome to FaceCall
-            button click
+        main
+            div#landingpage 
+                h2 Welcome to FaceCall
+                h3 Please write your nickname
+                input#nickname(type="text" placeholder="Nickname")
+                h3 make a room 
+                input#roomname(type="text" placeholder="Roomname")
+                div#roomlist 
+                    h3 RoomList
+            div#callpage
+                h3#mycamera My Camera
+                    video#mycamera(autoplay width="400px" height="400")
+                    div
+                        ul#myaudio
+                        ul#myvideo 
+                        button mute
+                        button turn off camera
+                h3#peercamera Peer Camera 
+                    video#peercamera(autoplay width="400px" height="400")
+                    div
+                        ul#peeraudio
+                        ul#peervideo 
+                        button mute
+                        button turn off camera
         script(src="/public/js/app.js")
