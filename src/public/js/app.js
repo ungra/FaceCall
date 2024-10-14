@@ -19,6 +19,7 @@ let myCamera = true;
 let myAudio = true;
 let myCameraList;
 let myAudioList;
+let myDevices;
 
 landingPage.hidden = false;
 callPage.hidden = true;
@@ -38,10 +39,8 @@ socket.on("disconnect", () => {
 
 //callPage
 
-function settingCameraList() {
-  myCameraList = myMediaStream
-    .getTracks()
-    .filter((track) => track.kind === "video");
+function settingCameraList(myDevices) {
+  myCameraList = myDevices.filter((device) => device.kind === "videoinput");
   myCameraList.forEach((camera) => {
     const option = document.createElement("option");
     option.innerText = camera.label;
@@ -49,10 +48,8 @@ function settingCameraList() {
   });
 }
 
-function setttingAudioList() {
-  myAudioList = myMediaStream
-    .getTracks()
-    .filter((track) => track.kind === "audio");
+function setttingAudioList(myDevices) {
+  myAudioList = myDevices.filter((device) => device.kind === "audioinput");
   myAudioList.forEach((audio) => {
     const option = document.createElement("option");
     option.innerText = audio.label;
@@ -66,8 +63,9 @@ async function getMyCamera() {
       video: true,
       audio: true,
     });
-    settingCameraList();
-    setttingAudioList();
+    myDevices = await navigator.mediaDevices.enumerateDevices();
+    settingCameraList(myDevices);
+    setttingAudioList(myDevices);
     myVideo.srcObject = myMediaStream;
   } catch (e) {
     console.log(e);
