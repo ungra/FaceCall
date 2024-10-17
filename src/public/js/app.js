@@ -18,6 +18,8 @@ let myMediaStream;
 let myDevices;
 let myCameraList;
 let myAudioList;
+let myCamera = true;
+let myAudio = true;
 
 landingPageDiv.hidden = false;
 callPageDiv.hidden = true;
@@ -113,12 +115,15 @@ async function settingMyMediaStream(cameraId, audioId) {
       deviceId: audioId ? { exact: audioId } : undefined,
     },
   };
+  console.log("cameraId :", cameraId);
+  console.log("audioId :", audioId);
+
   try {
     myDevices = await navigator.mediaDevices.enumerateDevices();
     myMediaStream = await navigator.mediaDevices.getUserMedia(
       cameraId ? currentConstraint : initialConstraint
     );
-    if (!cameraId) {
+    if (!cameraId && !audioId) {
       settingCameraList();
       setttingAudioList();
     }
@@ -149,31 +154,44 @@ function handleMediaChange(event) {
 myCameraSelect.addEventListener("change", handleMediaChange);
 myAudioSelect.addEventListener("change", handleMediaChange);
 
-// function handleMyCameraBt(event) {
-//   event.preventDefault();
-//   if (myCamera) {
-//     myMediaStream.getVideoTracks()[0].stop();
-//     myCamera = false;
-//     myVideoOffBt.innerText = "Turn on Camera";
-//   } else {
-//     getMyMedia();
-//     myCamera = true;
-//     myVideoOffBt.innerText = "Turn off Camera";
-//   }
-// }
+//click mute, camera turn off
 
-// function handleMyAudioBt(event) {
-//   event.preventDefault();
-//   if (myAudio) {
-//     myMediaStream.getAudioTracks()[0].stop();
-//     myAudio = false;
-//     myAudioMuteBt.innerText = "unMute";
-//   } else {
-//     getMyMedia();
-//     myAudio = true;
-//     myAudioMuteBt.innerText = "Mute";
-//   }
-// }
+function handleCameraOff(event) {
+  event.preventDefault();
+  let [cameraId, audioId] = getSelectedID();
+  if (myCamera) {
+    myMediaStream.getVideoTracks()[0].stop();
+    myCamera = false;
+    myCameraOffBtn.innerText = "Turn on Camera";
+  } else {
+    if (myAudio) {
+      settingMyMediaStream(cameraId, audioId);
+    } else {
+      settingMyMediaStream(cameraId, null);
+    }
+    myCamera = true;
+    myCameraOffBtn.innerText = "Turn off Camera";
+  }
+}
 
-// myVideoOffBt.addEventListener("click", handleMyCameraBt);
-// myAudioMuteBt.addEventListener("click", handleMyAudioBt);
+function handleMute(event) {
+  event.preventDefault();
+  let [cameraId, audioId] = getSelectedID();
+  if (myAudio) {
+    myMediaStream.getAudioTracks()[0].stop();
+    myAudio = false;
+    myAudioMuteBtn.innerText = "unMute";
+  } else {
+    if (myCamera) {
+      settingMyMediaStream(cameraId, audioId);
+    } else {
+      settingMyMediaStream(null, audioId);
+    }
+
+    myAudio = true;
+    myAudioMuteBtn.innerText = "Mute";
+  }
+}
+
+myCameraOffBtn.addEventListener("click", handleCameraOff);
+myAudioMuteBtn.addEventListener("click", handleMute);
