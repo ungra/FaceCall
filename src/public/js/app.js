@@ -16,6 +16,8 @@ let myNickname = "anonymous";
 let roomName;
 let myMediaStream;
 let myDevices;
+let myCameraList;
+let myAudioList;
 
 landingPageDiv.hidden = false;
 callPageDiv.hidden = true;
@@ -76,10 +78,12 @@ roomNameForm.addEventListener("submit", handleRoomName);
 
 function settingCameraList() {
   myCameraList = myDevices.filter((device) => device.kind === "videoinput");
-  console.log(myMediaStream.getVideoTracks().filter((track) => track.label));
   myCameraList.forEach((camera) => {
     const option = document.createElement("option");
     option.innerText = camera.label;
+    if (camera.label === myMediaStream.getVideoTracks().label) {
+      option.selected = true;
+    }
     myCameraSelect.appendChild(option);
   });
 }
@@ -89,6 +93,9 @@ function setttingAudioList() {
   myAudioList.forEach((audio) => {
     const option = document.createElement("option");
     option.innerText = audio.label;
+    if (audio.label === myMediaStream.getAudioTracks().label) {
+      option.selected = true;
+    }
     myAudioSelect.appendChild(option);
   });
 }
@@ -99,8 +106,12 @@ async function settingMyMediaStream(cameraId, audioId) {
     audio: true,
   };
   const currentConstraint = {
-    video: { deviceId: cameraId ? { exact: cameraId } : undefined },
-    audio: { deviceId: audioId ? { exact: audioId } : undefined },
+    video: {
+      deviceId: cameraId ? { exact: cameraId } : undefined,
+    },
+    audio: {
+      deviceId: audioId ? { exact: audioId } : undefined,
+    },
   };
   try {
     myDevices = await navigator.mediaDevices.enumerateDevices();
@@ -116,6 +127,27 @@ async function settingMyMediaStream(cameraId, audioId) {
     console.log(e);
   }
 }
+
+//change Audio, Camera
+
+function getSelectedID() {
+  let selectedCamera = myCameraList.filter(
+    (camera) => camera.label === myCameraSelect.value
+  );
+  let selectedAudio = myAudioList.filter(
+    (audio) => audio.label === myAudioSelect.value
+  );
+  return [selectedCamera[0].deviceId, selectedAudio[0].deviceId];
+}
+
+function handleMediaChange(event) {
+  event.preventDefault();
+  let [cameraId, audioId] = getSelectedID();
+  settingMyMediaStream(cameraId, audioId);
+}
+
+myCameraSelect.addEventListener("change", handleMediaChange);
+myAudioSelect.addEventListener("change", handleMediaChange);
 
 // function handleMyCameraBt(event) {
 //   event.preventDefault();
@@ -145,16 +177,3 @@ async function settingMyMediaStream(cameraId, audioId) {
 
 // myVideoOffBt.addEventListener("click", handleMyCameraBt);
 // myAudioMuteBt.addEventListener("click", handleMyAudioBt);
-
-// function handleAudioChange(event) {
-//   event.preventDefault();
-//   getMyMedia(myCameraSelect.value, myAudioSelect.value);
-// }
-
-// function handleCameraChange(event) {
-//   event.preventDefault();
-//   getMyMedia(myCameraSelect.value, myAudioSelect.value);
-// }
-
-// myAudioSelect.addEventListener("change", handleAudioChange);
-// myCameraSelect.addEventListener("change", handleCameraChange);
