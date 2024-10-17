@@ -10,35 +10,33 @@ html(lang="en")
         header
             h1 FaceCall 
         main
-            div#landingPageDiv 
+            div#landingPage 
                 h2 Welcome to FaceCall
-                div#submitNicknameDiv
+                div#beforeNickname
                     h3 Please write your nickname
-                    form#nickNameForm
+                    form#nickname
                         input(type="text" placeholder="write your nickname")
-                div#submittedUserNickNameDiv
-                div#submitRoomNameDiv
+                div#afterNickname
+                div#beforeRoomName
                     h3 make a room
-                    form#roomNameForm
+                    form#roomName
                         input(type="text" placeholder="Roomname")
-                div#roomListDiv 
-                    h3 RoomList
-            div#callPageDiv
+                div 
+                    h3#roomList RoomList
+            div#callPage
                 h3 My Camera
                     div 
                         video#myCamera(autoplay width="400px" height="400" style="-moz-transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform: rotateY(180deg)")
                         div
-                            select#myAudio
-                            select#myVideo 
+                            select#myAudioList
+                            select#myCameraList 
                             button#myAudioMute Mute
-                            button#myVideoOff Turn off Camera
+                            button#myCameraOff Turn off Camera
                 h3 Peer Camera 
                     div
                         video#peerCamera(autoplay width="400px" height="400")
                         div
                             select#peerAudio
-                            select#peerVideo 
-                            button#peerAudioMute mute
-                            button#peerVideoOff turn off camera
+                            select#peerCamera 
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
