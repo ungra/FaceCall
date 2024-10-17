@@ -115,9 +115,6 @@ async function settingMyMediaStream(cameraId, audioId) {
       deviceId: audioId ? { exact: audioId } : undefined,
     },
   };
-  console.log("cameraId :", cameraId);
-  console.log("audioId :", audioId);
-
   try {
     myDevices = await navigator.mediaDevices.enumerateDevices();
     myMediaStream = await navigator.mediaDevices.getUserMedia(
@@ -128,6 +125,7 @@ async function settingMyMediaStream(cameraId, audioId) {
       setttingAudioList();
     }
     myCameraVideo.srcObject = myMediaStream;
+    checkMuteAndCameraOff();
   } catch (e) {
     console.log(e);
   }
@@ -155,6 +153,15 @@ myCameraSelect.addEventListener("change", handleMediaChange);
 myAudioSelect.addEventListener("change", handleMediaChange);
 
 //click mute, camera turn off
+
+function checkMuteAndCameraOff() {
+  if (!myCamera) {
+    myMediaStream.getVideoTracks()[0].stop();
+  }
+  if (!myAudio) {
+    myMediaStream.getAudioTracks()[0].stop();
+  }
+}
 
 function handleCameraOff(event) {
   event.preventDefault();
