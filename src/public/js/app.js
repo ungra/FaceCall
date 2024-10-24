@@ -6,7 +6,7 @@ const nicknameForm = document.getElementById("nickname");
 const roomNameForm = document.getElementById("roomName");
 const roomListh3 = document.getElementById("roomList");
 const myCameraVideo = document.getElementById("myCamera");
-const peerCmeraVideo = document.getElementById("peerCamera");
+const peerCameraVideo = document.getElementById("peerCamera");
 const myCameraOffBtn = document.getElementById("myCameraOff");
 const myAudioMuteBtn = document.getElementById("myAudioMute");
 const myCameraSelect = document.getElementById("myCameraList");
@@ -20,6 +20,7 @@ let myCameraList;
 let myAudioList;
 let myCamera = true;
 let myAudio = true;
+let myPeerConnection;
 
 landingPageDiv.hidden = false;
 callPageDiv.hidden = true;
@@ -37,6 +38,34 @@ socket.on("disconnect", () => {
   console.log("disconnect!!!");
 });
 
+socket.on("welcome", async () => {
+  console.log("someone joined");
+  const offer = await myPeerConnection.createOffer();
+  myPeerConnection.setLocalDescription(offer);
+  console.log("send the offer");
+  socket.emit("offer", offer, roomName);
+});
+
+socket.on("offer", async (offer) => {
+  console.log("received offer");
+  myPeerConnection.setRemoteDescription(offer);
+  console.log("offer:", offer);
+  const answer = await myPeerConnection.createAnswer();
+  console.log("send the answer");
+  socket.emit("answer", answer, roomName);
+});
+
+socket.on("answer", (answer) => {
+  console.log("receiced the answer");
+  myPeerConnection.setRemoteDescription(answer);
+  console.log("answer:", answer);
+});
+
+socket.on("ice", (ice) => {
+  console.log("receiced the ice", ice);
+  myPeerConnection.addIceCandidate(ice);
+});
+
 //landing page
 function handleNickname(event) {
   event.preventDefault();
@@ -50,27 +79,29 @@ function handleNickname(event) {
   afterNNDiv.appendChild(h3);
   input.value = "";
 }
-function handleRoomName(event) {
+async function handleRoomName(event) {
   event.preventDefault();
   const input = roomNameForm.querySelector("input");
   console.log(`submit Room Name: ${input.value}`);
   roomName = input.value;
+  await initCallPage();
   const li = document.createElement("li");
   li.innerText = roomName;
   roomListh3.appendChild(li);
   input.value = "";
   landingPageDiv.hidden = true;
   callPageDiv.hidden = false;
-  initCallPage();
+  socket.emit("join_room", roomName);
 }
-function initCallPage() {
+async function initCallPage() {
   const roomNameh2 = document.createElement("h2");
   roomNameh2.innerText = `RoomName : ${roomName}`;
   callPage.prepend(roomNameh2);
   nicknameh2 = document.createElement("h2");
   nicknameh2.innerText = `My NickName : ${myNickname}`;
   callPage.prepend(nicknameh2);
-  settingMyMediaStream();
+  await settingMyMediaStream();
+  makeConnection();
 }
 
 nicknameForm.addEventListener("submit", handleNickname);
@@ -202,3 +233,36 @@ function handleMute(event) {
 
 myCameraOffBtn.addEventListener("click", handleCameraOff);
 myAudioMuteBtn.addEventListener("click", handleMute);
+
+//WebRTC code
+
+function handleIce(event) {
+  console.log("send the ice", event.candidate);
+  socket.emit("ice", event.candidate, roomName);
+}
+
+function handleAddstream(event) {
+  console.log("addstream");
+  peerCameraVideo.srcObject = event.stream;
+}
+
+function makeConnection() {
+  myPeerConnection = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: [
+          "stun:stun.l.google.com:19302",
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+          "stun:stun3.l.google.com:19302",
+          "stun:stun4.l.google.com:19302",
+        ],
+      },
+    ],
+  });
+  myPeerConnection.addEventListener("icecandidate", handleIce);
+  myPeerConnection.addEventListener("addstream", handleAddstream);
+  myMediaStream.getTracks().forEach((track) => {
+    myPeerConnection.addTrack(track, myMediaStream);
+  });
+}

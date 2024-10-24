@@ -26,7 +26,7 @@ html(lang="en")
             div#callPage
                 h3 My Camera
                     div 
-                        video#myCamera(autoplay width="400px" height="400" style="-moz-transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform: rotateY(180deg)")
+                        video#myCamera(autoplay, playsinline, width="400px", height="400", style="-moz-transform: rotateY(180deg); -webkit-transform: rotateY(180deg); transform: rotateY(180deg)")
                         div
                             select#myAudioList
                             select#myCameraList 
@@ -34,9 +34,7 @@ html(lang="en")
                             button#myCameraOff Turn off Camera
                 h3 Peer Camera 
                     div
-                        video#peerCamera(autoplay width="400px" height="400")
+                        video#peerCamera(autoplay, playsinline, width="400px", height="400")
                         div
-                            select#peerAudio
-                            select#peerCamera 
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
