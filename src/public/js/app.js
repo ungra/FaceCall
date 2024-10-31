@@ -27,15 +27,40 @@ callPageDiv.hidden = true;
 beforeNNDiv.hidden = false;
 afterNNDiv.hidden = true;
 
+//init_landingPage
+function initLandingPage(event) {
+  event.preventDefault();
+}
+
 //socket io
 const socket = io();
 
 socket.on("connect", () => {
   console.log("connection sucess: ", socket.id);
+  socket.emit("getRoomList");
 });
 
 socket.on("disconnect", () => {
   console.log("disconnect!!!");
+});
+
+socket.on("roomList", (roomList) => {
+  console.log("update roomList");
+  while (roomListh3.hasChildNodes()) {
+    roomListh3.removeChild(roomListh3.firstChild);
+  }
+  if (roomList) {
+    for (let index in roomList) {
+      const li = document.createElement("li");
+      li.innerText = index;
+      roomListh3.appendChild(li);
+    }
+  }
+});
+
+socket.on("bye", () => {
+  console.log("someone left");
+  peerFace.srcObject = null;
 });
 
 socket.on("welcome", async () => {
