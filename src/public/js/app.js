@@ -49,8 +49,8 @@ socket.on("welcome", async () => {
 socket.on("offer", async (offer) => {
   console.log("received offer");
   myPeerConnection.setRemoteDescription(offer);
-  console.log("offer:", offer);
   const answer = await myPeerConnection.createAnswer();
+  myPeerConnection.setLocalDescription(answer);
   console.log("send the answer");
   socket.emit("answer", answer, roomName);
 });
@@ -58,7 +58,6 @@ socket.on("offer", async (offer) => {
 socket.on("answer", (answer) => {
   console.log("receiced the answer");
   myPeerConnection.setRemoteDescription(answer);
-  console.log("answer:", answer);
 });
 
 socket.on("ice", (ice) => {
@@ -174,10 +173,24 @@ function getSelectedID() {
   return [selectedCamera[0].deviceId, selectedAudio[0].deviceId];
 }
 
-function handleMediaChange(event) {
+function replaceSender() {
+  const videoTrack = myMediaStream.getVideoTracks()[0];
+  const audioTrack = myMediaStream.getAudioTracks()[0];
+  const videoSender = myPeerConnection
+    .getSenders()
+    .find((sender) => sender.track.kind === "video");
+  videoSender.replaceTrack(videoTrack);
+  const audioSender = myPeerConnection
+    .getSenders()
+    .find((sender) => sender.track.kind === "audio");
+  audioSender.replaceTrack(audioTrack);
+}
+
+async function handleMediaChange(event) {
   event.preventDefault();
   let [cameraId, audioId] = getSelectedID();
-  settingMyMediaStream(cameraId, audioId);
+  await settingMyMediaStream(cameraId, audioId);
+  replaceSender();
 }
 
 myCameraSelect.addEventListener("change", handleMediaChange);
@@ -198,10 +211,11 @@ function handleCameraOff(event) {
   event.preventDefault();
   let [cameraId, audioId] = getSelectedID();
   if (myCamera) {
-    myMediaStream.getVideoTracks()[0].stop();
+    myMediaStream.getVideoTracks()[0].enabled = false;
     myCamera = false;
     myCameraOffBtn.innerText = "Turn on Camera";
   } else {
+    myMediaStream.getVideoTracks()[0].enabled = true;
     if (myAudio) {
       settingMyMediaStream(cameraId, audioId);
     } else {
@@ -210,6 +224,7 @@ function handleCameraOff(event) {
     myCamera = true;
     myCameraOffBtn.innerText = "Turn off Camera";
   }
+  replaceSender();
 }
 
 function handleMute(event) {
@@ -229,6 +244,7 @@ function handleMute(event) {
     myAudio = true;
     myAudioMuteBtn.innerText = "Mute";
   }
+  replaceSender();
 }
 
 myCameraOffBtn.addEventListener("click", handleCameraOff);
